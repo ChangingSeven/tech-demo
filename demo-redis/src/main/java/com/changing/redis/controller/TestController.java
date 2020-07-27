@@ -24,11 +24,9 @@ import lombok.extern.slf4j.Slf4j;
 public class TestController {
 
     /**
-     *
      * redis数据类型及使用场景：https://www.cnblogs.com/superfj/p/9232482.html
      * redis原生方法：https://www.runoob.com/redis/redis-strings.html
      * redis方法示例：https://www.cnblogs.com/KIV-Y/p/10763213.html
-     *
      */
 
     @Autowired
