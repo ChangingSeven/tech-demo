@@ -11,6 +11,50 @@ import java.util.concurrent.TimeUnit;
 public interface RedisService {
 
     /**
+     * 删除单个键值对
+     *
+     * @param key 键
+     * @return 删除结果
+     */
+    Boolean delKey(String key);
+
+    /**
+     * 设置键的失效时间
+     *
+     * @param key      键
+     * @param times    时长
+     * @param timeUnit 时间单位
+     * @return 失效操作结果
+     */
+    Boolean expireKey(String key, long times, TimeUnit timeUnit);
+
+    /**
+     * 在指定时间失效键
+     *
+     * @param key  键
+     * @param date 日期
+     * @return 失效操作结果
+     */
+    Boolean expireKeyAtTime(String key, Date date);
+
+    /**
+     * 获取键的剩余失效时长，指定时间单位
+     *
+     * @param key      键
+     * @param timeUnit 时间单位
+     * @return 剩余失效时长
+     */
+    Long getExpire(String key, TimeUnit timeUnit);
+
+    /**
+     * 获取键所对应的值的数据类型
+     *
+     * @param key 键
+     * @return 值的数据类型
+     */
+    String getDataType(String key);
+
+    /**
      * 插入新的键值对
      *
      * @param key   键
@@ -48,42 +92,6 @@ public interface RedisService {
     <T> T getByStringKey(String key, Class<T> t);
 
     /**
-     * 删除单个键值对
-     *
-     * @param key 键
-     * @return 删除结果
-     */
-    Boolean delKey(String key);
-
-    /**
-     * 设置键的失效时间
-     *
-     * @param key      键
-     * @param times    时长
-     * @param timeUnit 时间单位
-     * @return 失效操作结果
-     */
-    Boolean expireKey(String key, long times, TimeUnit timeUnit);
-
-    /**
-     * 在指定时间失效键
-     *
-     * @param key  键
-     * @param date 日期
-     * @return 失效操作结果
-     */
-    Boolean expireKeyAtTime(String key, Date date);
-
-    /**
-     * 获取键的剩余失效时长，指定时间单位
-     *
-     * @param key      键
-     * @param timeUnit 时间单位
-     * @return 剩余失效时长
-     */
-    Long getExpire(String key, TimeUnit timeUnit);
-
-    /**
      * 增长键的值
      *
      * @param key   键
@@ -101,5 +109,51 @@ public interface RedisService {
      * @param key 键
      * @return 值的长度
      */
-    Long size(String key);
+    Long getValueLengthByStringKey(String key);
+
+    /**
+     * 从列表左侧插入新元素
+     *
+     * @param key   键
+     * @param value 值
+     * @return 列表当前长度
+     */
+    Long listLeftPush(String key, String value);
+
+    /**
+     * 从列表右侧移除值
+     *
+     * @param key 键
+     * @return 移除元素的值
+     */
+    <T> T listRightPop(String key, Class<T> t);
+
+    /**
+     * 从列表右侧插入新元素
+     *
+     * @param key   键
+     * @param value 值
+     * @return 列表当前长度
+     */
+    Long listRightPush(String key, String value);
+
+    /**
+     * 从列表左侧移除值
+     *
+     * @param key 键
+     * @return 移除元素的值
+     */
+    <T> T listLeftPop(String key, Class<T> t);
+
+    /**
+     * 在超时时间内从最左侧移除一个元素，并返回被移除元素的值
+     * @param key 键
+     * @param times 时长
+     * @param timeUnit 时间单位
+     * @param t 返回值
+     * @param <T> 返回值类型
+     * @return 返回值
+     */
+    <T> T listBLeftPop(String key, long times, TimeUnit timeUnit, Class<T> t);
+
 }
