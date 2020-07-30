@@ -1,14 +1,16 @@
 package com.changing.redis.service.impl;
 
 import com.changing.redis.service.RedisService;
-
-import java.util.Date;
-import java.util.concurrent.TimeUnit;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.connection.DataType;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
+
+import java.util.Collections;
+import java.util.Date;
+import java.util.List;
+import java.util.Set;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @author chenjun
@@ -131,4 +133,84 @@ public class RedisServiceImpl implements RedisService {
 
         return (T) redisTemplate.opsForList().leftPop(REDIS_KEY_PREFIX + key, times, timeUnit);
     }
+
+    @Override
+    public Long addToSet(String key, Object... values) {
+
+        return redisTemplate.opsForSet().add(key, values);
+    }
+
+    @Override
+    public List<Object> popFromSet(String key, long itemNum) {
+        if (itemNum < 1) {
+            return null;
+        }
+
+        if (1 == itemNum) {
+            Object popItem = redisTemplate.opsForSet().pop(key);
+            return Collections.singletonList(popItem);
+        } else {
+            return redisTemplate.opsForSet().pop(key, itemNum);
+        }
+    }
+
+    @Override
+    public Long sizeOfSet(String key) {
+
+        return redisTemplate.opsForSet().size(key);
+    }
+
+    @Override
+    public <T> Set<T> membersOfSet(String key, Class<T> t) {
+
+        return redisTemplate.opsForSet().members(key);
+    }
+
+    @Override
+    public <T> Set<T> differenceOfSet(String key, String key2, Class<T> t) {
+
+        return redisTemplate.opsForSet().difference(key, key2);
+    }
+
+    @Override
+    public <T> Set<T> intersectSet(String key, String key2, Class<T> t) {
+
+        return redisTemplate.opsForSet().intersect(key, key2);
+    }
+
+    @Override
+    public <T> Set<T> unionSet(String key, String key2, Class<T> t) {
+
+        return redisTemplate.opsForSet().union(key, key2);
+    }
+
+    @Override
+    public <T> T randomFromSet(String key, Class<T> t) {
+
+        return (T) redisTemplate.opsForSet().randomMember(key);
+    }
+
+    @Override
+    public <T> Long removeFromSetByValue(String key, Class<T> t, T... values) {
+
+        return redisTemplate.opsForSet().remove(key, values);
+    }
+
+    @Override
+    public <T> Boolean addToZSet(String key, double score, T value, Class<T> t) {
+
+        return redisTemplate.opsForZSet().add(key, value, score);
+    }
+
+    @Override
+    public Long sizeOfZSet(String key) {
+
+        return redisTemplate.opsForZSet().size(key);
+    }
+
+    public void set() {
+
+
+    }
+
 }
