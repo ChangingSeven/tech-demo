@@ -6,9 +6,11 @@ import org.springframework.data.redis.connection.DataType;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
@@ -208,9 +210,100 @@ public class RedisServiceImpl implements RedisService {
         return redisTemplate.opsForZSet().size(key);
     }
 
-    public void set() {
+    @Override
+    public Long sizeOfZSetByScore(String key, double min, double max) {
 
+        return redisTemplate.opsForZSet().count(key, min, max);
+    }
 
+    @Override
+    public <T> Set<T> rangeByIndex(String key, long start, long end, Class<T> t) {
+
+        return redisTemplate.opsForZSet().range(key, start, end);
+    }
+
+    @Override
+    public <T> Long rankOfZSetByValue(String key, T value, Class<T> t) {
+
+        return redisTemplate.opsForZSet().rank(key, value);
+    }
+
+    @Override
+    public <T> Long removeFromZSetByValues(String key, Class<T> t, T... values) {
+
+        return redisTemplate.opsForZSet().remove(key, values);
+    }
+
+    @Override
+    public <T> Double getScoreOfZSetByValue(String key, T value, Class<T> t) {
+
+        return redisTemplate.opsForZSet().score(key, value);
+    }
+
+    @Override
+    public <F, V> void putToHash(String key, F filed, V value) {
+
+        redisTemplate.opsForHash().put(key, filed, value);
+    }
+
+    @Override
+    public <F, V> void putToHashIfAbsent(String key, F filed, V value) {
+
+        redisTemplate.opsForHash().putIfAbsent(key, filed, value);
+    }
+
+    @Override
+    public <F, V> void putToHash(String key, Map<F, V> data) {
+
+        redisTemplate.opsForHash().putAll(key, data);
+    }
+
+    @Override
+    public <T> Long deleteFromSetByFiled(String key, Class<T> t, T... filed) {
+
+        return redisTemplate.opsForHash().delete(key, filed);
+    }
+
+    @Override
+    public <T> Boolean checkFiledExistInHashKey(String key, T filed, Class<T> t) {
+
+        return redisTemplate.opsForHash().hasKey(key, filed);
+    }
+
+    @Override
+    public <F, T> T getValueByFiledFromHash(String key, F filed, Class<T> t) {
+
+        return (T) redisTemplate.opsForHash().get(key, filed);
+    }
+
+    @Override
+    public <F, V> List<V> getValueByMultiFiledFromHash(String key, Collection<F> filed) {
+
+        return redisTemplate.opsForHash().multiGet(key, filed);
+    }
+
+    @Override
+    public <F, V> Map<F, V> getAllFromHash(String key) {
+
+        return redisTemplate.opsForHash().entries(key);
+    }
+
+    @Override
+    public <F> Set<F> getAllFiledFromHash(String key) {
+
+        return redisTemplate.opsForHash().keys(key);
+    }
+
+    @Override
+    public <V> List<V> getAllValueFromHash(String key) {
+
+        return redisTemplate.opsForHash().values(key);
+    }
+
+    @Override
+    public Long lengthOfHash(String key) {
+
+        return redisTemplate.opsForHash().size(key);
     }
 
 }
