@@ -1,6 +1,9 @@
 package com.changing.redis.service.impl;
 
+import com.changing.redis.constants.CommonConstant;
+import com.changing.redis.exception.UnSupportRedisDataTypeException;
 import com.changing.redis.service.RedisService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.connection.DataType;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -20,12 +23,9 @@ import java.util.concurrent.TimeUnit;
  * @since 2020-07-27 20:48
  */
 @Service
+@Slf4j
 public class RedisServiceImpl implements RedisService {
 
-    /**
-     * 所有键的统一前缀
-     */
-    public static final String REDIS_KEY_PREFIX = "rdsk_";
 
     @Autowired
     private RedisTemplate redisTemplate;
@@ -33,107 +33,109 @@ public class RedisServiceImpl implements RedisService {
     @Override
     public Boolean delKey(String key) {
 
-        return redisTemplate.delete(REDIS_KEY_PREFIX + key);
+        Boolean deleteResult = redisTemplate.delete(CommonConstant.REDIS_KEY_PREFIX + key);
+        log.info("删除redis数据结果:{}, key:{}", deleteResult, key);
+        return deleteResult;
     }
 
     @Override
     public Boolean expireKey(String key, long times, TimeUnit timeUnit) {
-
-        return redisTemplate.expire(REDIS_KEY_PREFIX + key, times, timeUnit);
+        Boolean expireResult = redisTemplate.expire(CommonConstant.REDIS_KEY_PREFIX + key, times, timeUnit);
+        log.info("设置redis数据失效时长:{}, key:{}, time:{}, timeUnit:{}", expireResult, key, times, timeUnit);
+        return expireResult;
     }
 
     @Override
     public Boolean expireKeyAtTime(String key, Date date) {
 
-        return redisTemplate.expireAt(REDIS_KEY_PREFIX + key, date);
+        return redisTemplate.expireAt(CommonConstant.REDIS_KEY_PREFIX + key, date);
     }
 
     @Override
     public Long getExpire(String key, TimeUnit timeUnit) {
         if (null == timeUnit) {
             // 默认时间单位：毫秒
-            return redisTemplate.getExpire(REDIS_KEY_PREFIX + key);
+            return redisTemplate.getExpire(CommonConstant.REDIS_KEY_PREFIX + key);
         } else {
-            return redisTemplate.getExpire(REDIS_KEY_PREFIX + key, timeUnit);
+            return redisTemplate.getExpire(CommonConstant.REDIS_KEY_PREFIX + key, timeUnit);
         }
     }
 
     @Override
     public String getDataType(String key) {
-        DataType dataType = redisTemplate.type(REDIS_KEY_PREFIX + key);
-
+        DataType dataType = redisTemplate.type(CommonConstant.REDIS_KEY_PREFIX + key);
         return dataType.code();
     }
 
     @Override
     public void addStringKey(String key, Object value) {
 
-        redisTemplate.opsForValue().set(REDIS_KEY_PREFIX + key, value);
+        redisTemplate.opsForValue().set(CommonConstant.REDIS_KEY_PREFIX + key, value);
     }
 
     @Override
     public Integer appendToStringKey(String key, String value) {
 
-        return redisTemplate.opsForValue().append(REDIS_KEY_PREFIX + key, value);
+        return redisTemplate.opsForValue().append(CommonConstant.REDIS_KEY_PREFIX + key, value);
     }
 
     @Override
     public void addAndExpireStringKey(String key, Object value, long times, TimeUnit timeUnit) {
 
-        redisTemplate.opsForValue().set(REDIS_KEY_PREFIX + key, value, times, timeUnit);
+        redisTemplate.opsForValue().set(CommonConstant.REDIS_KEY_PREFIX + key, value, times, timeUnit);
     }
 
     @Override
     public <T> T getByStringKey(String key, Class<T> t) {
 
-        return (T) redisTemplate.opsForValue().get(REDIS_KEY_PREFIX + key);
+        return (T) redisTemplate.opsForValue().get(CommonConstant.REDIS_KEY_PREFIX + key);
     }
 
     @Override
-    public <T> T increment(String key, T value, Class<T> t) throws Exception {
+    public <T> T increment(String key, T value, Class<T> t) throws UnSupportRedisDataTypeException {
         if (value instanceof Long) {
-            return (T) redisTemplate.opsForValue().increment(REDIS_KEY_PREFIX + key, (Long) value);
+            return (T) redisTemplate.opsForValue().increment(CommonConstant.REDIS_KEY_PREFIX + key, (Long) value);
         } else if (value instanceof Double) {
-            return (T) redisTemplate.opsForValue().increment(REDIS_KEY_PREFIX + key, (Double) value);
+            return (T) redisTemplate.opsForValue().increment(CommonConstant.REDIS_KEY_PREFIX + key, (Double) value);
         } else {
-            throw new Exception("不允许的数据类型");
+            throw new UnSupportRedisDataTypeException("不允许的数据类型");
         }
     }
 
     @Override
     public Long getValueLengthByStringKey(String key) {
 
-        return redisTemplate.opsForValue().size(REDIS_KEY_PREFIX + key);
+        return redisTemplate.opsForValue().size(CommonConstant.REDIS_KEY_PREFIX + key);
     }
 
     @Override
     public Long listLeftPush(String key, String value) {
 
-        return redisTemplate.opsForList().leftPush(REDIS_KEY_PREFIX + key, value);
+        return redisTemplate.opsForList().leftPush(CommonConstant.REDIS_KEY_PREFIX + key, value);
     }
 
     @Override
     public <T> T listRightPop(String key, Class<T> t) {
 
-        return (T) redisTemplate.opsForList().rightPop(REDIS_KEY_PREFIX + key);
+        return (T) redisTemplate.opsForList().rightPop(CommonConstant.REDIS_KEY_PREFIX + key);
     }
 
     @Override
     public Long listRightPush(String key, String value) {
 
-        return redisTemplate.opsForList().rightPush(REDIS_KEY_PREFIX + key, value);
+        return redisTemplate.opsForList().rightPush(CommonConstant.REDIS_KEY_PREFIX + key, value);
     }
 
     @Override
     public <T> T listLeftPop(String key, Class<T> t) {
 
-        return (T) redisTemplate.opsForList().leftPop(REDIS_KEY_PREFIX + key);
+        return (T) redisTemplate.opsForList().leftPop(CommonConstant.REDIS_KEY_PREFIX + key);
     }
 
     @Override
     public <T> T listBLeftPop(String key, long times, TimeUnit timeUnit, Class<T> t) {
 
-        return (T) redisTemplate.opsForList().leftPop(REDIS_KEY_PREFIX + key, times, timeUnit);
+        return (T) redisTemplate.opsForList().leftPop(CommonConstant.REDIS_KEY_PREFIX + key, times, timeUnit);
     }
 
     @Override
@@ -145,7 +147,7 @@ public class RedisServiceImpl implements RedisService {
     @Override
     public List<Object> popFromSet(String key, long itemNum) {
         if (itemNum < 1) {
-            return null;
+            return Collections.emptyList();
         }
 
         if (1 == itemNum) {

@@ -1,5 +1,7 @@
 package com.changing.redis.service;
 
+import com.changing.redis.exception.UnSupportRedisDataTypeException;
+
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
@@ -105,7 +107,7 @@ public interface RedisService {
      * @return 增长后的值
      * @throws Exception 异常
      */
-    <T> T increment(String key, T value, Class<T> t) throws Exception;
+    <T> T increment(String key, T value, Class<T> t) throws UnSupportRedisDataTypeException;
 
     /**
      * 获取值的长度
