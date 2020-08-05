@@ -4,7 +4,6 @@ import com.changing.redis.mq.pubsub.anotation.RedisSubscriberMethod;
 import com.changing.redis.mq.pubsub.anotation.RedisSubscriberType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.concurrent.CountDownLatch;
 
@@ -15,11 +14,14 @@ import java.util.concurrent.CountDownLatch;
 public class SendSmsRedisMessageSubscriber {
     private static final Logger log = LoggerFactory.getLogger(SendSmsRedisMessageSubscriber.class);
 
-    private CountDownLatch latch;
+    /**
+     * 程序计数器
+     * 此属性名只允许为 countDownLatch
+     */
+    private CountDownLatch countDownLatch;
 
-    @Autowired
-    public SendSmsRedisMessageSubscriber(CountDownLatch latch) {
-        this.latch = latch;
+    public SendSmsRedisMessageSubscriber(CountDownLatch countDownLatch) {
+        this.countDownLatch = countDownLatch;
     }
 
     /**
@@ -36,7 +38,7 @@ public class SendSmsRedisMessageSubscriber {
         } catch (Exception e) {
             log.error("[消费发送短信消息队列sendSmsMessage数据失败，失败信息:{}]", e.getMessage());
         }
-        latch.countDown();
+        countDownLatch.countDown();
     }
 
 }

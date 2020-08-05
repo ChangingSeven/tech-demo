@@ -26,9 +26,15 @@ import java.util.concurrent.TimeUnit;
 @Slf4j
 public class RedisServiceImpl implements RedisService {
 
-
     @Autowired
     private RedisTemplate redisTemplate;
+
+    @Override
+    public <T> void sendDataToChannel(String channel, T data, Class<T> t) {
+
+        redisTemplate.convertAndSend(channel, data);
+        log.info("发送数据到指定通道成功, channel:{}, data:{}", channel, data);
+    }
 
     @Override
     public Boolean delKey(String key) {

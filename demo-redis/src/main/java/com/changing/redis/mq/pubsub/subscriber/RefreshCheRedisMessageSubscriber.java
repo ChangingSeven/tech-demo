@@ -1,22 +1,25 @@
 package com.changing.redis.mq.pubsub.subscriber;
 
+import com.alibaba.fastjson.JSON;
+import com.changing.redis.model.bo.RefreshCacheBO;
 import com.changing.redis.mq.pubsub.anotation.RedisSubscriberMethod;
 import com.changing.redis.mq.pubsub.anotation.RedisSubscriberType;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.extern.slf4j.Slf4j;
 
 import java.util.concurrent.CountDownLatch;
 
 @RedisSubscriberType
+@Slf4j
 public class RefreshCheRedisMessageSubscriber {
-    private static final Logger LOGGER = LoggerFactory.getLogger(RefreshCheRedisMessageSubscriber.class);
 
-    private CountDownLatch latch;
+    /**
+     * 程序计数器
+     * 此属性名只允许为 countDownLatch
+     */
+    private CountDownLatch countDownLatch;
 
-    @Autowired
-    public RefreshCheRedisMessageSubscriber(CountDownLatch latch) {
-        this.latch = latch;
+    public RefreshCheRedisMessageSubscriber(CountDownLatch countDownLatch) {
+        this.countDownLatch = countDownLatch;
     }
 
     /**
@@ -27,14 +30,17 @@ public class RefreshCheRedisMessageSubscriber {
      */
     @RedisSubscriberMethod(topic = "refreshCache")
     public void refreshCacheMessage(String jsonMsg) {
-        LOGGER.info("[开始消费刷新缓存消息队列数据...]");
+        log.info("[开始消费刷新缓存消息队列数据...]");
         try {
-            System.out.println(jsonMsg);
-            LOGGER.info("[消费刷新缓存消息队列数据成功.]");
+            RefreshCacheBO refreshCacheBO = JSON.parseObject(jsonMsg, RefreshCacheBO.class);
+            String keyType = refreshCacheBO.getKeyType();
+            String keyName = refreshCacheBO.getKeyName();
+            String keyValue = refreshCacheBO.getKeyValue();
+            log.info("消费刷新缓存消息队列数据成功, 字典类型为：{}, 字典-键为：{}, 字典-值为：{}", keyType, keyName, keyValue);
         } catch (Exception e) {
-            LOGGER.error("[消费刷新缓存消息队列数据失败，失败信息:{}]", e.getMessage());
+            log.error("[消费刷新缓存消息队列数据失败，失败信息:{}]", e.getMessage());
         }
-        latch.countDown();
+        countDownLatch.countDown();
     }
 
 }

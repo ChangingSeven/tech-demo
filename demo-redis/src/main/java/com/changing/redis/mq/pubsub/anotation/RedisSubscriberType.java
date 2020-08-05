@@ -1,7 +1,6 @@
 package com.changing.redis.mq.pubsub.anotation;
 
 
-import javax.validation.constraints.NotNull;
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Inherited;

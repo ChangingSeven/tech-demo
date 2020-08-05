@@ -36,7 +36,7 @@ public class MessageListenerContainerConfiguration {
      * @return 计数器bean
      */
     @Bean
-    public CountDownLatch latch() {
+    public CountDownLatch countDownLatch() {
         //指定了计数的次数 1
         return new CountDownLatch(1);
     }

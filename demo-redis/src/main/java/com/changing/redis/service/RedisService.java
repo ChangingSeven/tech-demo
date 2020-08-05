@@ -17,6 +17,16 @@ import java.util.concurrent.TimeUnit;
 public interface RedisService {
 
     /**
+     * 发送数据到指定的通道内
+     *
+     * @param channel 通道名
+     * @param data    数据
+     * @param t       数据类型
+     * @param <T>     数据对象类型
+     */
+    <T> void sendDataToChannel(String channel, T data, Class<T> t);
+
+    /**
      * 删除单个键值对
      *
      * @param key 键

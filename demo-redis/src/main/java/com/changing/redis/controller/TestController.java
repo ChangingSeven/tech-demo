@@ -1,5 +1,7 @@
 package com.changing.redis.controller;
 
+import com.changing.redis.model.bo.RefreshCacheBO;
+import com.changing.redis.mq.pubsub.publisher.CommonPublisher;
 import com.changing.redis.service.RedisService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,6 +29,8 @@ public class TestController {
 
     @Autowired
     private RedisService redisService;
+    @Autowired
+    private CommonPublisher commonPublisher;
 
     @GetMapping("/time")
     public String test01() {
@@ -41,4 +45,15 @@ public class TestController {
         return "Current Time Is: " + format;
     }
 
+    @GetMapping("/pub")
+    public String test02() {
+        RefreshCacheBO refreshCacheBO = new RefreshCacheBO();
+        refreshCacheBO.setKeyType("userType");
+        refreshCacheBO.setKeyName("3");
+        refreshCacheBO.setKeyValue("群众");
+
+        commonPublisher.send("refreshCache", refreshCacheBO, RefreshCacheBO.class);
+
+        return "success";
+    }
 }
