@@ -2,6 +2,7 @@ package com.changing.redis.controller;
 
 import com.changing.redis.model.bo.RefreshCacheBO;
 import com.changing.redis.mq.pubsub.publisher.CommonPublisher;
+import com.changing.redis.mq.queue.producer.QueueSender;
 import com.changing.redis.service.RedisService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,6 +32,8 @@ public class TestController {
     private RedisService redisService;
     @Autowired
     private CommonPublisher commonPublisher;
+    @Autowired
+    private QueueSender queueSender;
 
     @GetMapping("/time")
     public String test01() {
@@ -55,5 +58,16 @@ public class TestController {
         commonPublisher.send("refreshCache", refreshCacheBO, RefreshCacheBO.class);
 
         return "success";
+    }
+
+    @GetMapping("/queue")
+    public String test03() {
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        Date date = new Date();
+        String format = simpleDateFormat.format(date);
+
+        queueSender.sendMsg("TEST",format);
+
+        return format;
     }
 }
