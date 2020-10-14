@@ -26,6 +26,8 @@
 
     <modules>
         <module>demo-redis</module>
+        <module>demo-websocket</module>
+        <module>demo-eureka-server</module>
 
     </modules>
 
