@@ -28,6 +28,7 @@
         <module>demo-redis</module>
         <module>demo-websocket</module>
         <module>demo-eureka-server</module>
+        <module>demo-spring-batch</module>
 
     </modules>
 
