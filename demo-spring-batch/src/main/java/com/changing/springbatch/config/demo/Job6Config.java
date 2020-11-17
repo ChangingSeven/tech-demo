@@ -1,4 +1,4 @@
-package com.changing.springbatch.config;
+package com.changing.springbatch.config.demo;
 
 import com.changing.springbatch.model.Person;
 import com.changing.springbatch.processor.PersonItemProcessor;
@@ -16,42 +16,48 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.FileSystemResource;
+import org.springframework.core.task.SimpleAsyncTaskExecutor;
+import org.springframework.core.task.TaskExecutor;
 
 /**
+ * 多线程读写
+ *
  * @author chenjun
  * @version V1.0
  * @since 2020-10-29 17:44
  */
 @Configuration
-public class HelloWorldJobConfig {
+public class Job6Config {
 
     @Bean
-    public Job helloWorlJob(JobBuilderFactory jobBuilders, StepBuilderFactory stepBuilders) {
-        return jobBuilders.get("helloWorldJob").start(helloWorldStep(stepBuilders)).build();
+    public Job job6(JobBuilderFactory jobBuilders, StepBuilderFactory stepBuilders) {
+
+        return jobBuilders.get("job6Name").start(job6Step1(stepBuilders)).build();
     }
 
     @Bean
-    public Step helloWorldStep(StepBuilderFactory stepBuilders) {
-        return stepBuilders.get("helloWorldStep").<Person, String>chunk(10).reader(reader()).processor(processor())
-            .writer(writer()).build();
+    public Step job6Step1(StepBuilderFactory stepBuilders) {
+        return stepBuilders.get("job6Step1Name").<Person, String>chunk(10).reader(job6Reader())
+            .processor(new PersonItemProcessor()).writer(job6Writer()).taskExecutor(job6TaskExecutor())
+            // 线程并发数
+            .throttleLimit(10).build();
     }
 
-    @Bean
-    public FlatFileItemReader<Person> reader() {
+    private FlatFileItemReader<Person> job6Reader() {
         return new FlatFileItemReaderBuilder<Person>().name("personItemReader")
             .resource(new ClassPathResource("csv/persons.csv")).delimited()
             .names(new String[] { "firstName", "lastName" }).targetType(Person.class).build();
     }
 
-    @Bean
-    public PersonItemProcessor processor() {
-        return new PersonItemProcessor();
-    }
-
-    @Bean
-    public FlatFileItemWriter<String> writer() {
+    private FlatFileItemWriter<String> job6Writer() {
         return new FlatFileItemWriterBuilder<String>().name("greetingItemWriter")
-            .resource(new FileSystemResource("target/test-outputs/greetings.txt"))
+            .resource(new FileSystemResource("target/test-outputs/job6_greetings.txt"))
             .lineAggregator(new PassThroughLineAggregator<>()).build();
     }
+
+    private TaskExecutor job6TaskExecutor() {
+        // 异步多线程
+        return new SimpleAsyncTaskExecutor("job6_task_executor");
+    }
+
 }

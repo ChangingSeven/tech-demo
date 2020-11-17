@@ -3,7 +3,7 @@ package com.changing.springbatch;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import com.changing.springbatch.config.BatchConfig;
-import com.changing.springbatch.config.HelloWorldJobConfig;
+import com.changing.springbatch.config.demo.HelloWorldJobConfig;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -40,12 +40,12 @@ public class SpringBatchApplicationTests {
     static class BatchTestConfig {
 
         @Autowired
-        private Job helloWorlJob;
+        private Job helloWorldJob;
 
         @Bean
         JobLauncherTestUtils jobLauncherTestUtils() throws NoSuchJobException {
             JobLauncherTestUtils jobLauncherTestUtils = new JobLauncherTestUtils();
-            jobLauncherTestUtils.setJob(helloWorlJob);
+            jobLauncherTestUtils.setJob(helloWorldJob);
 
             return jobLauncherTestUtils;
         }
