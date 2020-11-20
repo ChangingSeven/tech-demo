@@ -83,7 +83,7 @@ public class Job7Config {
 
     private ItemReader<Person> job7ItemReader() {
         return new FlatFileItemReaderBuilder<Person>().name("job7ItemReader")
-            .resource(new ClassPathResource("csv/persons.csv")).delimited()
+            .resource(new ClassPathResource("sourcefile/persons.csv")).delimited()
             .names(new String[] { "firstName", "lastName" }).targetType(Person.class).build();
     }
 

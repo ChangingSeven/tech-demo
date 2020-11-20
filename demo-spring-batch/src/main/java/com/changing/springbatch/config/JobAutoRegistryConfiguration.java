@@ -74,7 +74,7 @@ public class JobAutoRegistryConfiguration implements CommandLineRunner {
 
         // 步骤一：csv文件内容写入csv
         FlatFileItemReader<Person> step01ItemReader = new FlatFileItemReaderBuilder<Person>().name("step01ItemReader")
-            .resource(new ClassPathResource("csv/persons.csv")).delimited()
+            .resource(new ClassPathResource("sourcefile/persons.csv")).delimited()
             .names(new String[] { "firstName", "lastName" }).targetType(Person.class).build();
         FlatFileItemWriter<Person> step01ItemWriter = new FlatFileItemWriterBuilder<Person>().name("step01ItemWriter")
             .resource(new FileSystemResource("target/test-outputs/serial_step01_output.csv"))
@@ -122,7 +122,7 @@ public class JobAutoRegistryConfiguration implements CommandLineRunner {
 
         // 步骤一：csv文件内容写入csv
         FlatFileItemReader<Person> step11ItemReader = new FlatFileItemReaderBuilder<Person>().name("step11ItemReader")
-            .resource(new ClassPathResource("csv/persons.csv")).delimited()
+            .resource(new ClassPathResource("sourcefile/persons.csv")).delimited()
             .names(new String[] { "firstName", "lastName" }).targetType(Person.class).build();
         FlatFileItemWriter<Person> step11ItemWriter = new FlatFileItemWriterBuilder<Person>().name("step11ItemWriter")
             .resource(new FileSystemResource("target/test-outputs/parallel_step11_output.csv"))

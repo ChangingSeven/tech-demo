@@ -55,7 +55,7 @@ public class Job4Config {
 
     private ItemReader<Person> job4ItemReader() {
         return new FlatFileItemReaderBuilder<Person>().name("job4ItemReader")
-            .resource(new ClassPathResource("csv/persons.csv")).delimited()
+            .resource(new ClassPathResource("sourcefile/persons.csv")).delimited()
             .names(new String[] { "firstName", "lastName" }).targetType(Person.class).build();
     }
 
