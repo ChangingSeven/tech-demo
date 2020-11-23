@@ -32,37 +32,37 @@ import org.springframework.lang.Nullable;
  * @since 2020-11-20 09:45
  */
 @Configuration
-public class JdbcJobConfig {
+public class JdbcReaderJobConfig {
 
     @Autowired
     private DataSource dataSource;
 
     @Bean
-    public Job jdbcJob(JobBuilderFactory jobBuilders, StepBuilderFactory stepBuilders) {
-        return jobBuilders.get("jdbcJobName").start(jdbcJobStep1(stepBuilders)).build();
+    public Job jdbcJobReader(JobBuilderFactory jobBuilders, StepBuilderFactory stepBuilders) {
+        return jobBuilders.get("jdbcJobReaderName").start(jdbcJobReaderStep1(stepBuilders)).build();
     }
 
-    public Step jdbcJobStep1(StepBuilderFactory stepBuilders) {
-        return stepBuilders.get("jdbcJobStep1Name").<Person, Person>chunk(10).reader(jdbcJobItemReader())
-            .writer(jdbcJobItemWriter()).build();
+    public Step jdbcJobReaderStep1(StepBuilderFactory stepBuilders) {
+        return stepBuilders.get("jdbcJobReaderStep1Name").<Person, Person>chunk(10).reader(jdbcJobReaderItemReader())
+            .writer(jdbcJobReaderItemWriter()).build();
     }
 
-    private JdbcCursorItemReader jdbcJobItemReader() {
+    private JdbcCursorItemReader jdbcJobReaderItemReader() {
         String querySql = "select first_name,last_name from person_tbl";
 
-        return new JdbcCursorItemReaderBuilder<Person>().name("jdbcJobItemReader").dataSource(dataSource).sql(querySql)
+        return new JdbcCursorItemReaderBuilder<Person>().name("jdbcJobReaderItemReader").dataSource(dataSource).sql(querySql)
             .rowMapper(new PersonRowMapper()).build();
     }
 
-    private ItemWriter<Person> jdbcJobItemWriter() {
+    private ItemWriter<Person> jdbcJobReaderItemWriter() {
         DelimitedLineAggregator<Person> delimitedLineAggregator = new DelimitedLineAggregator<>();
         BeanWrapperFieldExtractor<Person> beanWrapperFieldExtractor = new BeanWrapperFieldExtractor<>();
         beanWrapperFieldExtractor.setNames(new String[] { "firstName", "lastName" });
         delimitedLineAggregator.setDelimiter(",");
         delimitedLineAggregator.setFieldExtractor(beanWrapperFieldExtractor);
 
-        return new FlatFileItemWriterBuilder<Person>().name("jdbcJobItemWriter")
-            .resource(new FileSystemResource("target/test-outputs/jdbcJob_output.csv"))
+        return new FlatFileItemWriterBuilder<Person>().name("jdbcJobReaderItemWriter")
+            .resource(new FileSystemResource("target/test-outputs/jdbcJobReader_output.csv"))
             .lineAggregator(delimitedLineAggregator).build();
     }
 

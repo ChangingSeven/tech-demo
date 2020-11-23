@@ -33,42 +33,42 @@ import org.springframework.lang.Nullable;
  * @since 2020-11-20 09:45
  */
 @Configuration
-public class JdbcPagingJobConfig {
+public class JdbcPagingReaderJobConfig {
 
     @Autowired
     private DataSource dataSource;
 
     @Bean
-    public Job jdbcPagingJob(JobBuilderFactory jobBuilders, StepBuilderFactory stepBuilders) throws Exception {
-        return jobBuilders.get("jdbcPagingJobName").start(jdbcPagingJobStep1(stepBuilders)).build();
+    public Job jdbcPagingJobReader(JobBuilderFactory jobBuilders, StepBuilderFactory stepBuilders) throws Exception {
+        return jobBuilders.get("jdbcPagingJobReaderName").start(jdbcPagingJobReaderStep1(stepBuilders)).build();
     }
 
-    public Step jdbcPagingJobStep1(StepBuilderFactory stepBuilders) throws Exception {
-        return stepBuilders.get("jdbcPagingJobStep1Name").<Person, Person>chunk(10).reader(jdbcPagingJobItemReader())
-            .writer(jdbcPagingJobItemWriter()).build();
+    public Step jdbcPagingJobReaderStep1(StepBuilderFactory stepBuilders) throws Exception {
+        return stepBuilders.get("jdbcPagingJobReaderStep1Name").<Person, Person>chunk(10).reader(jdbcPagingJobReaderItemReader())
+            .writer(jdbcPagingJobReaderItemWriter()).build();
     }
 
-    private JdbcPagingItemReader jdbcPagingJobItemReader() throws Exception {
+    private JdbcPagingItemReader jdbcPagingJobReaderItemReader() throws Exception {
         Map<String, Object> paramMap = new HashMap<>();
         paramMap.put("id", "2");
 
-        JdbcPagingItemReader<Person> jdbcPagingJobItemReader = new JdbcPagingItemReaderBuilder<Person>()
-            .name("jdbcPagingJobItemReader").dataSource(dataSource).queryProvider(queryProvider().getObject())
+        JdbcPagingItemReader<Person> jdbcPagingJobReaderItemReader = new JdbcPagingItemReaderBuilder<Person>()
+            .name("jdbcPagingJobReaderItemReader").dataSource(dataSource).queryProvider(queryProvider().getObject())
             .parameterValues(paramMap).rowMapper(new PersonRowMapper()).pageSize(2).build();
-        jdbcPagingJobItemReader.afterPropertiesSet();
+        jdbcPagingJobReaderItemReader.afterPropertiesSet();
 
-        return jdbcPagingJobItemReader;
+        return jdbcPagingJobReaderItemReader;
     }
 
-    private ItemWriter<Person> jdbcPagingJobItemWriter() {
+    private ItemWriter<Person> jdbcPagingJobReaderItemWriter() {
         DelimitedLineAggregator<Person> delimitedLineAggregator = new DelimitedLineAggregator<>();
         BeanWrapperFieldExtractor<Person> beanWrapperFieldExtractor = new BeanWrapperFieldExtractor<>();
         beanWrapperFieldExtractor.setNames(new String[] { "firstName", "lastName" });
         delimitedLineAggregator.setDelimiter(",");
         delimitedLineAggregator.setFieldExtractor(beanWrapperFieldExtractor);
 
-        return new FlatFileItemWriterBuilder<Person>().name("jdbcPagingJobItemWriter")
-            .resource(new FileSystemResource("target/test-outputs/jdbcPagingJob_output.csv"))
+        return new FlatFileItemWriterBuilder<Person>().name("jdbcPagingJobReaderItemWriter")
+            .resource(new FileSystemResource("target/test-outputs/jdbcPagingJobReader_output.csv"))
             .lineAggregator(delimitedLineAggregator).build();
     }
 
