@@ -5,17 +5,27 @@
         <quantity>5</quantity>
         <price>11.39</price>
         <customer>Customer1</customer>
+        <priceCustomer>
+            <!-- 如果映射的 java 实体类是 List<String> ，则此节点名需要配置节点名类型映射，否则节点名只能使用 string 且必须是小写 -->
+            <stringProp>111111</stringProp>
+        </priceCustomer>
     </trade>
     <trade xmlns="https://springframework.org/batch/sample/io/oxm/domain">
         <isin>XYZ0002</isin>
         <quantity>2</quantity>
         <price>72.99</price>
         <customer>Customer2c</customer>
+        <priceCustomer>
+            <stringProp>222222</stringProp>
+        </priceCustomer>
     </trade>
     <trade xmlns="https://springframework.org/batch/sample/io/oxm/domain">
         <isin>XYZ0003</isin>
         <quantity>9</quantity>
         <price>99.99</price>
         <customer>Customer3</customer>
+        <priceCustomer>
+            <stringProp>333333</stringProp>
+        </priceCustomer>
     </trade>
 </records>

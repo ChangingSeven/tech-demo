@@ -47,16 +47,16 @@ public class JobAutoRegistryConfiguration implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
-        ConfigurableApplicationContext applicationContext1 = (ConfigurableApplicationContext) applicationContext;
+        ConfigurableApplicationContext configurableApplicationContext = (ConfigurableApplicationContext) applicationContext;
 
         Job serialJob = buildSerialJob();
         String serialJobName = serialJob.getName();
-        applicationContext1.getBeanFactory().registerSingleton(serialJobName, serialJob);
+        configurableApplicationContext.getBeanFactory().registerSingleton(serialJobName, serialJob);
         log.info("串行批处理任务{}注入成功", serialJobName);
 
         Job parallelJob = buildParallelJob();
         String parallelJobName = parallelJob.getName();
-        applicationContext1.getBeanFactory().registerSingleton(parallelJobName, parallelJob);
+        configurableApplicationContext.getBeanFactory().registerSingleton(parallelJobName, parallelJob);
         log.info("并行批处理任务{}注入成功", parallelJobName);
     }
 
