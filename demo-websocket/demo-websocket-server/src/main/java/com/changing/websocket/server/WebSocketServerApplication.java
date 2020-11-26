@@ -1,7 +1,8 @@
-package com.changing.redis;
+package com.changing.websocket.server;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
 
@@ -10,16 +11,16 @@ import org.springframework.boot.web.servlet.support.SpringBootServletInitializer
  * @version V1.0
  * @since 2020-03-17 13:18
  */
-@SpringBootApplication
-public class DemoRedisApplication extends SpringBootServletInitializer {
+@SpringBootApplication(exclude = { DataSourceAutoConfiguration.class })
+public class WebSocketServerApplication extends SpringBootServletInitializer {
 
     public static void main(String[] args) {
-        SpringApplication.run(DemoRedisApplication.class, args);
+        SpringApplication.run(WebSocketServerApplication.class, args);
     }
 
     @Override
     protected SpringApplicationBuilder configure(SpringApplicationBuilder builder) {
-        return builder.sources(DemoRedisApplication.class);
+        return builder.sources(WebSocketServerApplication.class);
     }
 
 }

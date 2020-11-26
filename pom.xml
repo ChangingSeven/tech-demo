@@ -39,6 +39,8 @@
         <module>demo-websocket</module>
         <module>demo-eureka-server</module>
         <module>demo-spring-batch</module>
+        <module>demo-java-basic</module>
+        <module>demo-spring-basic</module>
     </modules>
 
     <dependencyManagement>
