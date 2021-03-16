@@ -4,6 +4,7 @@ import com.changing.redis.mq.pubsub.anotation.RedisSubscriberType;
 import lombok.extern.slf4j.Slf4j;
 import org.reflections.Reflections;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.support.BeanDefinitionBuilder;
 import org.springframework.beans.factory.support.DefaultListableBeanFactory;
 import org.springframework.boot.ApplicationArguments;
@@ -37,7 +38,7 @@ public class RedisSubscriberTypeApplicationRunner implements ApplicationRunner {
             String beanName = classSimpleName.substring(0, 1).toLowerCase() + classSimpleName.substring(1);
             DefaultListableBeanFactory defaultListableBeanFactory = (DefaultListableBeanFactory) applicationContext.getAutowireCapableBeanFactory();
             BeanDefinitionBuilder beanDefinitionBuilder = BeanDefinitionBuilder.genericBeanDefinition(redisSubscriberClass);
-            beanDefinitionBuilder.setScope("singleton");
+            beanDefinitionBuilder.setScope(BeanDefinition.SCOPE_SINGLETON);
             beanDefinitionBuilder.addConstructorArgValue(countDownLatch);
             defaultListableBeanFactory.registerBeanDefinition(beanName, beanDefinitionBuilder.getBeanDefinition());
 

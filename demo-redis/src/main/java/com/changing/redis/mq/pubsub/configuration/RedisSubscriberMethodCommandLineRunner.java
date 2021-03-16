@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.reflections.Reflections;
 import org.reflections.scanners.MethodAnnotationsScanner;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.support.BeanDefinitionBuilder;
 import org.springframework.beans.factory.support.DefaultListableBeanFactory;
 import org.springframework.boot.CommandLineRunner;
@@ -55,7 +56,7 @@ public class RedisSubscriberMethodCommandLineRunner implements CommandLineRunner
             Object subscriber = applicationContext.getBean(declaringClass);
             DefaultListableBeanFactory defaultListableBeanFactory = (DefaultListableBeanFactory) applicationContext.getAutowireCapableBeanFactory();
             BeanDefinitionBuilder beanDefinitionBuilder = BeanDefinitionBuilder.genericBeanDefinition(MessageListenerAdapter.class);
-            beanDefinitionBuilder.setScope("singleton");
+            beanDefinitionBuilder.setScope(BeanDefinition.SCOPE_SINGLETON);
             beanDefinitionBuilder.addConstructorArgValue(subscriber);
             beanDefinitionBuilder.addConstructorArgValue(methodName);
             defaultListableBeanFactory.registerBeanDefinition(listenerAdapterBeanName, beanDefinitionBuilder.getBeanDefinition());
