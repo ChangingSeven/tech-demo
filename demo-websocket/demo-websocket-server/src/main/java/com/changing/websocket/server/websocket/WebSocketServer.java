@@ -76,7 +76,7 @@ public class WebSocketServer {
         //判断是否需要指定发送，具体规则自定义
         if (message.indexOf("TOUSER") == 0) {
             String name = message.substring(message.indexOf("TOUSER") + 6, message.indexOf(";"));
-            appointSending(name, message.substring(message.indexOf(";") + 1, message.length()));
+            appointSending(name, message.substring(message.indexOf(";") + 1));
         } else {
             groupSending(message);
         }
